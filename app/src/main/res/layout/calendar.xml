@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Calendar">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/todayDate1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginBottom="3dp"
+                android:text="@string/todayDate1"
+                android:textSize="30dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/moveToday"
+                android:text="@string/today"
+                android:layout_toRightOf="@+id/todayDate1"
+                android:layout_alignBaseline="@+id/todayDate1"
+                android:layout_marginLeft="10dp"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/test_date"
+                android:text="날짜표시"
+                android:layout_toLeftOf="@+id/homebutton"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/exitSelect"
+                android:text="완료"
+                android:layout_toLeftOf="@+id/test_date"
+                android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/homebutton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/homeicon"
+                android:scaleType="fitCenter"
+                android:background="?android:attr/selectableItemBackground"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_alignParentRight="true"
+                android:layout_margin="3dp"
+                android:clickable="true"/>
+        </RelativeLayout>
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:id="@+id/calendarView"
+                app:mcv_selectionColor="#00F"
+                app:mcv_tileHeight="35dp"
+                app:mcv_showOtherDates="other_months" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/todayDate2"
+                android:textSize="40dp"
+                android:id="@+id/todayDate2"
+                android:textAlignment="center"
+                android:background="#CfffE5" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/showSelectedDate"
+            android:text="선택된 날짜 표시"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/whole_contents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:clickable="true"
+            >
+            <TextView
+                android:id="@+id/content1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/content2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/content3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
