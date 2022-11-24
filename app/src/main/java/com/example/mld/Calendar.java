@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -28,12 +29,14 @@ import java.util.Locale;
     public class Calendar extends AppCompatActivity implements OnDateLongClickListener, View.OnClickListener {
         TextView todayDate1;
         TextView todayDate2;
+        TextView today;
         MaterialCalendarView calendarView;
         LinearLayout tocontent;
         ImageView tohome;
         Button dateselect;
         Button exitSelecting;
         Button showSelectedDates;
+        Button plus;
         boolean inSelectionMode = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,9 @@ import java.util.Locale;
         calendarView.setOnClickListener(this);
         todayDate1 = findViewById(R.id.todayDate1);
         todayDate2 = findViewById(R.id.todayDate2);
+        today = findViewById(R.id.moveToday);
+        plus = findViewById(R.id.plusCategory);
+
         todayDate1.setText(getDate(todayDate1));
         todayDate2.setText(getDate(todayDate2));
         calendarView.getSelectedDate();
@@ -77,6 +83,7 @@ import java.util.Locale;
                 dateselect.setVisibility(View.GONE);
                 exitSelecting.setVisibility(View.VISIBLE);
                 showSelectedDates.setVisibility(View.VISIBLE);
+                plus.setVisibility(View.VISIBLE);
                 dialog.dismiss();
             }
         };
@@ -92,6 +99,7 @@ import java.util.Locale;
                 exitSelecting.setVisibility(View.GONE);
                 showSelectedDates.setVisibility(View.GONE);
                 dateselect.setVisibility(View.VISIBLE);
+                plus.setVisibility(View.GONE);
                 inSelectionMode = false;
                 calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
             }
@@ -116,6 +124,14 @@ import java.util.Locale;
                 dateSelectionMode.setSingleChoiceItems(R.array.date_selection, -1, choiceListener);
                 dateSelectionMode.setNegativeButton("취소", cancelListener);
                 dateSelectionMode.show();
+            }
+        });
+
+        today.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calendarView.setSelectedDate(CalendarDay.today());
+                calendarView.setCurrentDate(CalendarDay.today());
             }
         });
 
