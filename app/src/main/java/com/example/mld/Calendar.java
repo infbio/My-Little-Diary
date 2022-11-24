@@ -5,8 +5,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.OnDateLongClickListener;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,25 +19,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
-    public class Calendar extends AppCompatActivity {
-        TextView todayDate1;
-        TextView todayDate2;
-        TextView today;
-        MaterialCalendarView calendarView;
-        LinearLayout tocontent;
-        ImageView tohome;
-        Button dateselect;
-        Button exitSelecting;
-        Button showSelectedDates;
-        Button plus;
-        boolean inSelectionMode = false;
+
+public class Calendar extends AppCompatActivity {
+    TextView todayDate1;
+    TextView todayDate2;
+    TextView today;
+    MaterialCalendarView calendarView;
+    LinearLayout tocontent;
+    ImageView tohome;
+    Button dateselect;
+    Button exitSelecting;
+    Button showSelectedDates;
+    Button plus;
+    boolean inSelectionMode = false;
+    String selectedDate = CalendarDay.today().getDate().toString();//전역변수 날짜. DB에 사용
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +49,9 @@ import java.util.Locale;
         today = findViewById(R.id.moveToday);
         plus = findViewById(R.id.plusCategory);
 
-        todayDate1.setText(getDate(todayDate1));
-        todayDate2.setText(getDate(todayDate2));
-        calendarView.getSelectedDate();
+        todayDate1.setText(selectedDate);
+        todayDate2.setText(selectedDate);
+
         tocontent=findViewById(R.id.whole_contents);
         tocontent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,25 +129,21 @@ import java.util.Locale;
             public void onClick(View view) {
                 calendarView.setSelectedDate(CalendarDay.today());
                 calendarView.setCurrentDate(CalendarDay.today());
+                selectedDate = CalendarDay.today().getDate().toString();
+                todayDate1.setText(selectedDate);
+                todayDate2.setText(selectedDate);
             }
         });
-
+        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView calendarView, @NonNull CalendarDay date, boolean selected) {
+                if(!inSelectionMode){
+                    selectedDate = date.getDate().toString();
+                    todayDate1.setText(selectedDate);
+                    todayDate2.setText(selectedDate);
+                    Toast.makeText(getApplicationContext(), selectedDate, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
-    private static String getDate(View view){
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        String getTime="";
-        switch (view.getId()){
-            case R.id.todayDate1:
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN);
-                getTime = dateFormat.format(date);
-                break;
-            case R.id.todayDate2:
-                SimpleDateFormat dateFormat2 = new SimpleDateFormat("E요일, yyyy-MM-dd", Locale.KOREAN);
-                getTime = dateFormat2.format(date);
-                break;
-        }
-        return getTime;
-    }
-
 }
