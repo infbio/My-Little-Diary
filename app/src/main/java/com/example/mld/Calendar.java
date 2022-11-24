@@ -19,11 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
 
-
-
-public class Calendar extends AppCompatActivity {
+public class Calendar extends AppCompatActivity implements View.OnClickListener{
     TextView todayDate1;
     TextView todayDate2;
     TextView today;
@@ -32,7 +29,6 @@ public class Calendar extends AppCompatActivity {
     ImageView tohome;
     Button dateselect;
     Button exitSelecting;
-    Button showSelectedDates;
     Button plus;
     boolean inSelectionMode = false;
     String selectedDate = CalendarDay.today().getDate().toString();//전역변수 날짜. DB에 사용
@@ -48,28 +44,15 @@ public class Calendar extends AppCompatActivity {
         todayDate2 = findViewById(R.id.todayDate2);
         today = findViewById(R.id.moveToday);
         plus = findViewById(R.id.plusCategory);
+        tocontent = findViewById(R.id.whole_contents); //내용 표시 뷰
+        tohome=findViewById(R.id.homebutton);
+        dateselect = findViewById(R.id.dateSelect);
+        exitSelecting = findViewById(R.id.exitSelect);
 
         todayDate1.setText(selectedDate);
         todayDate2.setText(selectedDate);
 
-        tocontent=findViewById(R.id.whole_contents);
-        tocontent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent tocontent = new Intent(Calendar.this, Contents.class);
-                startActivity(tocontent);
-            }
-        });
-        tohome=findViewById(R.id.homebutton);
-        tohome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        dateselect = findViewById(R.id.test_date);
-        exitSelecting = findViewById(R.id.exitSelect);
-        showSelectedDates = findViewById(R.id.showSelectedDate);
+
         DialogInterface.OnClickListener choiceListener = new DialogInterface.OnClickListener() { //날짜 선택모드. 여러개 선택과 범위 선택
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -79,7 +62,6 @@ public class Calendar extends AppCompatActivity {
                 inSelectionMode = true;
                 dateselect.setVisibility(View.GONE);
                 exitSelecting.setVisibility(View.VISIBLE);
-                showSelectedDates.setVisibility(View.VISIBLE);
                 plus.setVisibility(View.VISIBLE);
                 dialog.dismiss();
             }
@@ -90,28 +72,12 @@ public class Calendar extends AppCompatActivity {
                 calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
             }
         };
-        exitSelecting.setOnClickListener(new View.OnClickListener(){ //날짜 선택모드에서 나가기
-            @Override
-            public void onClick(View view){
-                exitSelecting.setVisibility(View.GONE);
-                showSelectedDates.setVisibility(View.GONE);
-                dateselect.setVisibility(View.VISIBLE);
-                plus.setVisibility(View.GONE);
-                inSelectionMode = false;
-                calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
-            }
-        });
-        showSelectedDates.setOnClickListener(new View.OnClickListener() { //날짜 선택모드에서 선택된 날짜들 토스트로 표시
-            @Override
-            public void onClick(View view) {
-                final List<CalendarDay> selectedDates = calendarView.getSelectedDates();
-                if (!selectedDates.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), selectedDates.toString(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "No Selection", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
+
+        exitSelecting.setOnClickListener(this);
+        today.setOnClickListener(this);
+        tohome.setOnClickListener(this);
+        tocontent.setOnClickListener(this);
 
         dateselect.setOnClickListener(new View.OnClickListener() { //날짜 선택버튼, 다이얼로그 표시
             @Override
@@ -124,17 +90,7 @@ public class Calendar extends AppCompatActivity {
             }
         });
 
-        today.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calendarView.setSelectedDate(CalendarDay.today());
-                calendarView.setCurrentDate(CalendarDay.today());
-                selectedDate = CalendarDay.today().getDate().toString();
-                todayDate1.setText(selectedDate);
-                todayDate2.setText(selectedDate);
-            }
-        });
-        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+        calendarView.setOnDateChangedListener(new OnDateSelectedListener() { //날짜를 클릭할 때마다(날짜가 바뀔때마다) 이벤트
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView calendarView, @NonNull CalendarDay date, boolean selected) {
                 if(!inSelectionMode){
@@ -145,5 +101,27 @@ public class Calendar extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onClick(View view){ //클릭 이벤트 정리.
+        if(view == exitSelecting) {
+            exitSelecting.setVisibility(View.GONE);
+            dateselect.setVisibility(View.VISIBLE);
+            plus.setVisibility(View.GONE);
+            inSelectionMode = false;
+            calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+        } else if(view == today) {
+            calendarView.setSelectedDate(CalendarDay.today());
+            calendarView.setCurrentDate(CalendarDay.today());
+            selectedDate = CalendarDay.today().getDate().toString();
+            todayDate1.setText(selectedDate);
+            todayDate2.setText(selectedDate);
+        } else if(view == tohome) {
+            finish();
+        } else if(view == tocontent) {
+            Intent tocontent = new Intent(Calendar.this, Contents.class);
+            startActivity(tocontent);
+        }
     }
 }
