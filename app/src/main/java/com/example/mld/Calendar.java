@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-    public class Calendar extends AppCompatActivity implements OnDateLongClickListener, View.OnClickListener {
+    public class Calendar extends AppCompatActivity {
         TextView todayDate1;
         TextView todayDate2;
         TextView today;
@@ -45,8 +45,6 @@ import java.util.Locale;
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         calendarView = findViewById(R.id.calendarView);
-        calendarView.setOnDateLongClickListener(this);
-        calendarView.setOnClickListener(this);
         todayDate1 = findViewById(R.id.todayDate1);
         todayDate2 = findViewById(R.id.todayDate2);
         today = findViewById(R.id.moveToday);
@@ -153,12 +151,4 @@ import java.util.Locale;
         return getTime;
     }
 
-    @Override
-    public void onDateLongClick(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date) {
-        widget.setSelectionMode(MaterialCalendarView.SELECTION_MODE_RANGE);
-    }
-    @Override
-    public void onClick(View view) {
-        calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
-    }
 }
