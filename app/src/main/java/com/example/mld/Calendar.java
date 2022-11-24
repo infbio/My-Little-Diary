@@ -19,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 
 public class Calendar extends AppCompatActivity implements View.OnClickListener{
     TextView todayDate1;
@@ -30,6 +33,7 @@ public class Calendar extends AppCompatActivity implements View.OnClickListener{
     Button dateselect;
     Button exitSelecting;
     Button plus;
+    TextView title;
     boolean inSelectionMode = false;
     String selectedDate = CalendarDay.today().getDate().toString();//전역변수 날짜. DB에 사용
 
@@ -39,6 +43,12 @@ public class Calendar extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.calendar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+        Realm.init(getApplicationContext());
+        RealmConfiguration config = new RealmConfiguration.Builder().allowWritesOnUiThread(true).build();
+        Realm.setDefaultConfiguration(config);
+        Realm mRealm = Realm.getDefaultInstance();
+
         calendarView = findViewById(R.id.calendarView);
         todayDate1 = findViewById(R.id.todayDate1);
         todayDate2 = findViewById(R.id.todayDate2);
@@ -48,6 +58,8 @@ public class Calendar extends AppCompatActivity implements View.OnClickListener{
         tohome=findViewById(R.id.homebutton);
         dateselect = findViewById(R.id.dateSelect);
         exitSelecting = findViewById(R.id.exitSelect);
+        title = findViewById(R.id.content1);
+
 
         todayDate1.setText(selectedDate);
         todayDate2.setText(selectedDate);
@@ -94,10 +106,20 @@ public class Calendar extends AppCompatActivity implements View.OnClickListener{
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView calendarView, @NonNull CalendarDay date, boolean selected) {
                 if(!inSelectionMode){
+                    title.setText("");
                     selectedDate = date.getDate().toString();
                     todayDate1.setText(selectedDate);
                     todayDate2.setText(selectedDate);
                     Toast.makeText(getApplicationContext(), selectedDate, Toast.LENGTH_SHORT).show();
+                    Contents_Data cd = mRealm.where(Contents_Data.class).equalTo("Date", selectedDate).findFirst();
+                    try{
+                        if(cd.isValid()){
+                            title.setText(cd.getTitle());
+                        }
+                    } catch (Exception e){
+
+                    }
+
                 }
             }
         });
@@ -121,6 +143,7 @@ public class Calendar extends AppCompatActivity implements View.OnClickListener{
             finish();
         } else if(view == tocontent) {
             Intent tocontent = new Intent(Calendar.this, Contents.class);
+            tocontent.putExtra("Date", selectedDate);
             startActivity(tocontent);
         }
     }
